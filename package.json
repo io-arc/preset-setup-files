@@ -12,9 +12,13 @@
   ],
   "engines": {
     "node": "14.x",
-    "npm": "6.x"
+    "npm": "6.x",
+    "yarn": "1.22.x"
   },
   "bin": {
     "preset-setup": "bin/index.js"
+  },
+  "devDependencies": {
+    "typescript": "4.2.4"
   }
 }
