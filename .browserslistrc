@@ -1,0 +1,3 @@
+# Specify the browser version(You can check the list of supported browsers with `npx browserslist`.)
+# Official：https://github.com/ai/browserslist
+maintained node versions
