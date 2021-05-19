@@ -25,7 +25,7 @@ Copyright (c) 2021 ${author}
 */`
   },
 
-  external: ['update-notifier', 'commander', 'cpx', 'kleur'],
+  external: ['update-notifier', 'commander', 'cpx', 'kleur', 'inquirer'],
 
   plugins: [
     nodeResolve(),
