@@ -1,9 +1,17 @@
 import { program } from 'commander'
+import { green } from 'kleur/colors'
 import updateNotifier from 'update-notifier'
 import { name, version } from '../package.json'
 
-// Library update
+/** checking library update */
 updateNotifier({ pkg: { name, version } }).notify()
 
-// Command
+/** end command */
+process.stdin.resume()
+process.on('SIGINT', (): void => {
+  console.log(green('Bye !'))
+  process.exit(0)
+})
+
+/** library command */
 program.version(version)
