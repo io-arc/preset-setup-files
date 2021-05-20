@@ -1,6 +1,7 @@
 import { program } from 'commander'
-import { green } from 'kleur/colors'
+import { green, red } from 'kleur/colors'
 import updateNotifier from 'update-notifier'
+import Templates from '~/libs/modules/Templates'
 import { name, version } from '../package.json'
 
 /** checking library update */
@@ -15,3 +16,21 @@ process.on('SIGINT', (): void => {
 
 /** library command */
 program.version(version)
+
+const exit = (): void => {
+  console.log(red('Oops X('))
+  process.exit(1)
+}
+
+/** exec */
+;(async (): Promise<void> => {
+  const templates = new Templates()
+  const res = await templates.exec()
+
+  if (res != null) {
+    exit()
+    return
+  }
+
+  console.log('complete')
+})()
