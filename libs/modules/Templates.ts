@@ -17,7 +17,14 @@ const templateList = {
   prettierrcCjs: '.prettierrc.cjs',
   prettierrcConfigJs: '.prettierrc.config.js',
   prettierrcConfigCjs: '.prettierrc.config.cjs',
-  prettierrcToml: '.prettierrc.toml'
+  prettierrcToml: '.prettierrc.toml',
+
+  // eslint
+  eslintrcJs: '.eslintrc.js',
+  eslintrcCjs: '.eslintrc.cjs',
+  eslintrcYml: '.eslintrc.yml',
+  eslintrcYaml: '.eslintrc.yaml',
+  eslintrcJson: '.eslintrc.json'
 } as const
 type templateList = typeof templateList[keyof typeof templateList]
 
@@ -26,7 +33,8 @@ export default class Templates {
     templateList.editorConfig,
     templateList.gitignore,
     templateList.browserslistrc,
-    templateList.prettierrc
+    templateList.prettierrc,
+    templateList.eslintrcYml
   ]
 
   public async exec(): Promise<number | void> {
@@ -62,7 +70,12 @@ export default class Templates {
       prettierrcCjs,
       prettierrcConfigJs,
       prettierrcConfigCjs,
-      prettierrcToml
+      prettierrcToml,
+      eslintrcJs,
+      eslintrcCjs,
+      eslintrcYml,
+      eslintrcYaml,
+      eslintrcJson
     } = templateList
 
     try {
@@ -136,7 +149,27 @@ export default class Templates {
               value: prettierrcToml,
               checked: this.#setBool(prettierrcToml)
             },
-            new inquirer.Separator()
+            new inquirer.Separator(),
+            {
+              value: eslintrcJs,
+              checked: this.#setBool(eslintrcJs)
+            },
+            {
+              value: eslintrcCjs,
+              checked: this.#setBool(eslintrcCjs)
+            },
+            {
+              value: eslintrcYml,
+              checked: this.#setBool(eslintrcYml)
+            },
+            {
+              value: eslintrcYaml,
+              checked: this.#setBool(eslintrcYaml)
+            },
+            {
+              value: eslintrcJson,
+              checked: this.#setBool(eslintrcJson)
+            }
           ]
         }
       ])
