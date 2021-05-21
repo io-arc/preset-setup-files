@@ -11,12 +11,14 @@ interface IfConfigFile {
 export default class Config extends BaseModules {
   readonly #choiceDataFile = `${os.homedir()}/.preset-setup-files-config.json`
   readonly #choices?: templateList[]
+  readonly #isExist: boolean = false
 
   constructor() {
     super()
 
     if (!fs.existsSync(this.#choiceDataFile)) return
 
+    this.#isExist = true
     const { choices }: IfConfigFile = JSON.parse(
       fs.readFileSync(this.#choiceDataFile, 'utf8')
     )
@@ -24,11 +26,19 @@ export default class Config extends BaseModules {
     this.#choices = choices
   }
 
+  public file(): string {
+    return this.#choiceDataFile
+  }
+
+  public existsFile(): boolean {
+    return this.#isExist
+  }
+
   public existChoices(): templateList[] | undefined {
     return this.#choices
   }
 
-  public saveChoices(choices: templateList[]): void {
+  public save(choices: templateList[]): void {
     const obj = {
       choices
     }
