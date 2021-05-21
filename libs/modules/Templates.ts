@@ -1,7 +1,6 @@
 import cpx from 'cpx'
 import inquirer from 'inquirer'
 import { green, red } from 'kleur'
-import path from 'path'
 import { BaseModules } from '~/libs/modules/BaseModules'
 
 const templateList = {
@@ -44,8 +43,12 @@ export default class Templates extends BaseModules {
     templateList.eslintrcYml
   ]
 
-  constructor(initChoices?: templateList[]) {
+  readonly #templateDir: string
+
+  constructor(templateDirectory: string, initChoices?: templateList[]) {
     super()
+    console.log(templateDirectory)
+    this.#templateDir = templateDirectory
     if (initChoices) this.#checkedItem = initChoices
   }
 
@@ -78,13 +81,15 @@ export default class Templates extends BaseModules {
         default: false
       })
 
-      cpx.copySync(
-        `${path.dirname(__filename)}/templates/{${this.#checkedItem.join(
-          ','
-        )}}`,
-        '',
-        { update: overwrite }
-      )
+      const source = ((items): string => {
+        const _ = items.join(',')
+        if (items.length === 1) return _
+        return `{${_}}`
+      })(this.#checkedItem)
+
+      cpx.copySync(`${this.#templateDir}/${source}`, '', {
+        update: !overwrite
+      })
 
       console.log(green('=== Files copy is done! ==='))
     } catch (e) {

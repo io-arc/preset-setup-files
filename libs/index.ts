@@ -25,7 +25,7 @@ program
 /** exec */
 ;(async ({ custom, config }: OptionValues): Promise<void> => {
   const config$ = new Config()
-  const template$ = new Templates(config$.existChoices())
+  const template$ = new Templates(config$.templateDir(), config$.existChoices())
 
   // Show config
   if (config) {
@@ -33,6 +33,7 @@ program
     console.log(
       `Default choices: ${bold().green(template$.items().join(', '))}`
     )
+    console.log(`Templates directory: ${bold().green(config$.templateDir())}`)
 
     const configFile = config$.existsFile()
       ? bold().green(config$.file())
@@ -45,8 +46,9 @@ program
 
   // Initialize Mode
   if (custom) {
-    console.log(bold().blue('=== Initialize default choices ==='))
+    console.log(bold().blue('=== Custom settings ==='))
     await template$.choices()
+    await config$.setTemplateDir()
     config$.save(template$.items())
     process.exit(0)
     return
