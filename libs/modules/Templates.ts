@@ -24,7 +24,10 @@ const templateList = {
   eslintrcCjs: '.eslintrc.cjs',
   eslintrcYml: '.eslintrc.yml',
   eslintrcYaml: '.eslintrc.yaml',
-  eslintrcJson: '.eslintrc.json'
+  eslintrcJson: '.eslintrc.json',
+
+  // eslint ignore
+  eslintignore: '.eslintignore'
 } as const
 type templateList = typeof templateList[keyof typeof templateList]
 
@@ -75,7 +78,8 @@ export default class Templates {
       eslintrcCjs,
       eslintrcYml,
       eslintrcYaml,
-      eslintrcJson
+      eslintrcJson,
+      eslintignore
     } = templateList
 
     try {
@@ -169,7 +173,14 @@ export default class Templates {
             {
               value: eslintrcJson,
               checked: this.#setBool(eslintrcJson)
-            }
+            },
+            new inquirer.Separator(),
+            // eslint ignore
+            {
+              value: eslintignore,
+              checked: this.#setBool(eslintignore)
+            },
+            new inquirer.Separator()
           ]
         }
       ])
