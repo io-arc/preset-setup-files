@@ -15,7 +15,7 @@ process.on('SIGINT', (): void => {
 })
 
 /** library command */
-program.version(version)
+program.version(version).parse(process.argv)
 
 const exit = (): void => {
   console.log(red('Oops X('))
