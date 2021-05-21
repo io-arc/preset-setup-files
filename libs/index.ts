@@ -1,50 +1,41 @@
 import { program } from 'commander'
-import { green, red } from 'kleur'
+import { bold, green } from 'kleur'
 import updateNotifier from 'update-notifier'
+import Config from '~/libs/modules/Config'
 import Templates from '~/libs/modules/Templates'
 import { name, version } from '../package.json'
-;(async (): Promise<void> => {
-  /** checking library update */
-  updateNotifier({ pkg: { name, version } }).notify()
 
-  /** end command */
-  process.stdin.resume()
-  process.on('SIGINT', (): void => {
-    console.log(green('Bye !'))
+/** checking library update */
+updateNotifier({ pkg: { name, version } }).notify()
+
+/** end command */
+process.stdin.resume()
+process.on('SIGINT', (): void => {
+  console.log(green('Bye !'))
+  process.exit(0)
+})
+
+/** library command */
+program
+  .version(version)
+  .option('--custom', 'Customize default choices and copy directories.', false)
+  .parse(process.argv)
+
+/** exec */
+;(async ({ custom }): Promise<void> => {
+  const config$ = new Config()
+  const template$ = new Templates(config$.existChoices())
+
+  // Initialize Mode
+  if (custom) {
+    console.log(bold().blue('=== Initialize default choices ==='))
+    await template$.choices()
+    config$.saveChoices(template$.items())
     process.exit(0)
-  })
-
-  /** library command */
-  program
-    .version(version)
-    .option(
-      '--custom',
-      'Customize default choices and copy directories.',
-      false
-    )
-    .parse(process.argv)
-
-  const template$ = new Templates()
-
-  const exit = (): void => {
-    console.log(red('Oops X('))
-    process.exit(1)
   }
 
-  // choices
-  const choices = async (): Promise<void> => {
-    const res = await template$.choices()
-    if (res != null) exit()
-  }
-
-  // copy
-  const copy = async (): Promise<void> => {
-    const copied = await template$.copy()
-    if (copied != null) exit()
-  }
-
-  await choices()
-  await copy()
+  await template$.choices()
+  await template$.copy()
 
   process.exit(0)
-})()
+})(program.opts())
