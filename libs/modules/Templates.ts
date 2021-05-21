@@ -1,5 +1,6 @@
 import cpx from 'cpx'
 import inquirer from 'inquirer'
+import { green } from 'kleur'
 import path from 'path'
 
 const templateList = {
@@ -64,18 +65,15 @@ export default class Templates {
         default: false
       })
 
-      cpx.copy(
+      cpx.copySync(
         `${path.dirname(__filename)}/templates/{${this.#checkedItem.join(
           ','
         )}}`,
         '',
-        { update: overwrite },
-        (error) => {
-          if (error != null) {
-            throw new Error(JSON.stringify(error))
-          }
-        }
+        { update: overwrite }
       )
+
+      console.log(green('=== Files copy is done! ==='))
     } catch (e) {
       console.error(e)
       return 1

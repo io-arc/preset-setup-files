@@ -1,5 +1,5 @@
 import { program } from 'commander'
-import { green, red } from 'kleur/colors'
+import { green, red } from 'kleur'
 import updateNotifier from 'update-notifier'
 import Templates from '~/libs/modules/Templates'
 import { name, version } from '../package.json'
@@ -17,27 +17,29 @@ process.on('SIGINT', (): void => {
 /** library command */
 program.version(version).parse(process.argv)
 
-const exit = (): void => {
-  console.log(red('Oops X('))
-  process.exit(1)
-}
-
 /** exec */
 ;(async (): Promise<void> => {
-  const templates = new Templates()
-  const choices = await templates.choices()
+  const template$ = new Templates()
 
-  if (choices != null) {
-    exit()
-    return
+  const exit = (): void => {
+    console.log(red('Oops X('))
+    process.exit(1)
   }
 
-  const copied = await templates.copy()
-
-  if (copied != null) {
-    exit()
-    return
+  // choices
+  const choices = async (): Promise<void> => {
+    const res = await template$.choices()
+    if (res != null) exit()
   }
 
-  console.log(green('=== Files copy is done! ==='))
+  // copy
+  const copy = async (): Promise<void> => {
+    const copied = await template$.copy()
+    if (copied != null) exit()
+  }
+
+  await choices()
+  await copy()
+
+  process.exit(0)
 })()
