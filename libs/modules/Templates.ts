@@ -1,6 +1,7 @@
 import cpx from 'cpx'
 import inquirer from 'inquirer'
-import path from 'path'
+import { green, red } from 'kleur'
+import { BaseModules } from '~/libs/modules/BaseModules'
 
 const templateList = {
   editorConfig: '.editorConfig',
@@ -31,9 +32,9 @@ const templateList = {
   // eslint ignore
   eslintignore: '.eslintignore'
 } as const
-type templateList = typeof templateList[keyof typeof templateList]
+export type templateList = typeof templateList[keyof typeof templateList]
 
-export default class Templates {
+export default class Templates extends BaseModules {
   #checkedItem: templateList[] = [
     templateList.editorConfig,
     templateList.gitignore,
@@ -42,10 +43,26 @@ export default class Templates {
     templateList.eslintrcYml
   ]
 
+  readonly #templateDir: string
+
+  constructor(templateDirectory: string, initChoices?: templateList[]) {
+    super()
+    console.log(templateDirectory)
+    this.#templateDir = templateDirectory
+    if (initChoices) this.#checkedItem = initChoices
+  }
+
+  public items(): templateList[] {
+    return this.#checkedItem
+  }
+
   /** Choice a templates */
-  public async choices(): Promise<number | void> {
+  public async choices(): Promise<void> {
     const choices = await this.#checkbox()
-    if (typeof choices === 'number') return 1
+    if (typeof choices === 'number') {
+      this.exit()
+      return
+    }
 
     if (!choices.confirm) {
       const [res] = await Promise.all([this.choices()])
@@ -55,7 +72,7 @@ export default class Templates {
     return
   }
 
-  public async copy(): Promise<number | void> {
+  public async copy(): Promise<void> {
     try {
       const { overwrite } = await inquirer.prompt<{ overwrite: boolean }>({
         type: 'confirm',
@@ -64,21 +81,19 @@ export default class Templates {
         default: false
       })
 
-      cpx.copy(
-        `${path.dirname(__filename)}/templates/{${this.#checkedItem.join(
-          ','
-        )}}`,
-        '',
-        { update: overwrite },
-        (error) => {
-          if (error != null) {
-            throw new Error(JSON.stringify(error))
-          }
-        }
-      )
+      const source = ((items): string => {
+        const _ = items.join(',')
+        if (items.length === 1) return _
+        return `{${_}}`
+      })(this.#checkedItem)
+
+      cpx.copySync(`${this.#templateDir}/${source}`, '', {
+        update: !overwrite
+      })
+
+      console.log(green('=== Files copy is done! ==='))
     } catch (e) {
-      console.error(e)
-      return 1
+      this.exit(e)
     }
   }
 
@@ -223,7 +238,7 @@ export default class Templates {
       this.#updateChecked(res.templates)
       return { confirm: res.confirm }
     } catch (e) {
-      console.error(e)
+      console.log(red(e))
       return 1
     }
   }
