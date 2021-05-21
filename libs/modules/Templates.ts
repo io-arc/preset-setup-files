@@ -1,4 +1,6 @@
+import cpx from 'cpx'
 import inquirer from 'inquirer'
+import path from 'path'
 
 const templateList = {
   editorConfig: '.editorConfig',
@@ -32,7 +34,7 @@ const templateList = {
 type templateList = typeof templateList[keyof typeof templateList]
 
 export default class Templates {
-  #defaultChecked: templateList[] = [
+  #checkedItem: templateList[] = [
     templateList.editorConfig,
     templateList.gitignore,
     templateList.browserslistrc,
@@ -40,15 +42,12 @@ export default class Templates {
     templateList.eslintrcYml
   ]
 
+  /** Choice a templates */
   public async choices(): Promise<number | void> {
     const choices = await this.#checkbox()
     if (typeof choices === 'number') return 1
 
-    const confirm = await this.#confirm()
-    if (typeof confirm === 'number') return 1
-
-    // Re choices
-    if (!confirm) {
+    if (!choices.confirm) {
       const [res] = await Promise.all([this.choices()])
       return res
     }
@@ -56,8 +55,35 @@ export default class Templates {
     return
   }
 
+  public async copy(): Promise<number | void> {
+    try {
+      const { overwrite } = await inquirer.prompt<{ overwrite: boolean }>({
+        type: 'confirm',
+        name: 'overwrite',
+        message: 'If the file has the same name, it will be overwritten.',
+        default: false
+      })
+
+      cpx.copy(
+        `${path.dirname(__filename)}/templates/{${this.#checkedItem.join(
+          ','
+        )}}`,
+        '',
+        { update: overwrite },
+        (error) => {
+          if (error != null) {
+            throw new Error(JSON.stringify(error))
+          }
+        }
+      )
+    } catch (e) {
+      console.error(e)
+      return 1
+    }
+  }
+
   /** Select templates */
-  #checkbox = async (): Promise<number | void> => {
+  #checkbox = async (): Promise<{ confirm: boolean } | number> => {
     const {
       editorConfig,
       gitignore,
@@ -83,7 +109,10 @@ export default class Templates {
     } = templateList
 
     try {
-      const res = await inquirer.prompt<{ templates: templateList[] }>([
+      const res = await inquirer.prompt<{
+        templates: templateList[]
+        confirm: boolean
+      }>([
         {
           type: 'checkbox',
           name: 'templates',
@@ -182,28 +211,17 @@ export default class Templates {
             },
             new inquirer.Separator()
           ]
+        },
+        {
+          type: 'confirm',
+          name: 'confirm',
+          message: 'Are you sure you want to create this?',
+          default: true
         }
       ])
 
       this.#updateChecked(res.templates)
-      return
-    } catch (e) {
-      console.error(e)
-      return 1
-    }
-  }
-
-  /** Are you sure you want to use the template you selected? */
-  #confirm = async (): Promise<boolean | number> => {
-    try {
-      const res = await inquirer.prompt<{ confirm: boolean }>({
-        type: 'confirm',
-        name: 'confirm',
-        message: 'Are you sure you want to create this?',
-        default: true
-      })
-
-      return res.confirm
+      return { confirm: res.confirm }
     } catch (e) {
       console.error(e)
       return 1
@@ -211,10 +229,10 @@ export default class Templates {
   }
 
   #updateChecked = (checked: templateList[]): void => {
-    this.#defaultChecked = checked
+    this.#checkedItem = checked
   }
 
   #setBool = (key: templateList): boolean => {
-    return this.#defaultChecked.includes(key)
+    return this.#checkedItem.includes(key)
   }
 }

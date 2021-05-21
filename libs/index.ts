@@ -32,5 +32,12 @@ const exit = (): void => {
     return
   }
 
-  console.log('complete')
+  const copied = await templates.copy()
+
+  if (copied != null) {
+    exit()
+    return
+  }
+
+  console.log(green('=== Files copy is done! ==='))
 })()
