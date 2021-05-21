@@ -40,8 +40,8 @@ export default class Templates {
     templateList.eslintrcYml
   ]
 
-  public async exec(): Promise<number | void> {
-    const choices = await this.#choices()
+  public async choices(): Promise<number | void> {
+    const choices = await this.#checkbox()
     if (typeof choices === 'number') return 1
 
     const confirm = await this.#confirm()
@@ -49,7 +49,7 @@ export default class Templates {
 
     // Re choices
     if (!confirm) {
-      const [res] = await Promise.all([this.exec()])
+      const [res] = await Promise.all([this.choices()])
       return res
     }
 
@@ -57,7 +57,7 @@ export default class Templates {
   }
 
   /** Select templates */
-  #choices = async (): Promise<number | void> => {
+  #checkbox = async (): Promise<number | void> => {
     const {
       editorConfig,
       gitignore,

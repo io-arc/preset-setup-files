@@ -25,9 +25,9 @@ const exit = (): void => {
 /** exec */
 ;(async (): Promise<void> => {
   const templates = new Templates()
-  const res = await templates.exec()
+  const choices = await templates.choices()
 
-  if (res != null) {
+  if (choices != null) {
     exit()
     return
   }
