@@ -3,22 +3,27 @@ import { green, red } from 'kleur'
 import updateNotifier from 'update-notifier'
 import Templates from '~/libs/modules/Templates'
 import { name, version } from '../package.json'
-
-/** checking library update */
-updateNotifier({ pkg: { name, version } }).notify()
-
-/** end command */
-process.stdin.resume()
-process.on('SIGINT', (): void => {
-  console.log(green('Bye !'))
-  process.exit(0)
-})
-
-/** library command */
-program.version(version).parse(process.argv)
-
-/** exec */
 ;(async (): Promise<void> => {
+  /** checking library update */
+  updateNotifier({ pkg: { name, version } }).notify()
+
+  /** end command */
+  process.stdin.resume()
+  process.on('SIGINT', (): void => {
+    console.log(green('Bye !'))
+    process.exit(0)
+  })
+
+  /** library command */
+  program
+    .version(version)
+    .option(
+      '--custom',
+      'Customize default choices and copy directories.',
+      false
+    )
+    .parse(process.argv)
+
   const template$ = new Templates()
 
   const exit = (): void => {
