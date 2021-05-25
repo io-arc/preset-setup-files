@@ -47,7 +47,6 @@ export default class Templates extends BaseModules {
 
   constructor(templateDirectory: string, initChoices?: templateList[]) {
     super()
-    console.log(templateDirectory)
     this.#templateDir = templateDirectory
     if (initChoices) this.#checkedItem = initChoices
   }

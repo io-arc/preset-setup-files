@@ -24,7 +24,7 @@
     "bin"
   ],
   "bin": {
-    "preset-setup": "bin/index.js"
+    "preset-setup-files": "bin/index.js"
   },
   "scripts": {
     "prepare": "husky install",
