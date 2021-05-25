@@ -12,6 +12,17 @@ $ npm install -g @io-arc/preset-setup-files
 $ yarn add global @io-arc/preset-setup-files
 ```
 
+### Supported files
+
+- .editorconfig
+- .gitignore
+- .npmrc
+- .npmignore
+- .browserslistrc
+- .prettierrc (json/json5/yaml/js/cjs/toml)
+- .eslintrc (js/cjs/yaml/json)
+- .eslintignore
+
 ## Usage
 
 ### Default
