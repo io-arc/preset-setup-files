@@ -1,0 +1,11 @@
+.github
+.node-version
+.nvmrc
+tests
+node_modules
+dist
+rollup.config.js
+tsconfig.json
+jest.config.js
+yarn.lock
+package-lock.json
