@@ -1,6 +1,6 @@
 {
   "name": "@io-arc/preset-setup-files",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Make it easy to install frequently used files.",
   "main": "",
   "homepage": "https://github.com/io-arc/preset-setup-files#readme",
@@ -16,9 +16,9 @@
     "editor"
   ],
   "engines": {
-    "node": "14.x",
-    "npm": "6.x",
-    "yarn": "1.22.x"
+    "node": ">= 14.x",
+    "npm": ">= 6.x",
+    "yarn": ">= 1.22.x"
   },
   "files": [
     "bin"
