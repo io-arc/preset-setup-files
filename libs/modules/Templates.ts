@@ -4,7 +4,7 @@ import { green, red } from 'kleur'
 import { BaseModules } from '~/libs/modules/BaseModules'
 
 const templateList = {
-  editorConfig: '.editorConfig',
+  editorConfig: '.editorconfig',
   gitignore: '.gitignore',
   npmrc: '.npmrc',
   npmignore: '.npmignore',
